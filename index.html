@@ -275,8 +275,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
         // Покупка
         purchaseContainer.innerHTML="";
-        if(plantLinks[plantName]){
-            plantLinks[plantName].forEach(item=>{
+        if(purchaseLinks[plantName]){
+            purchaseLinks[plantName].forEach(item=>{
                 const div = document.createElement("div");
                 div.className="purchase-option";
                 div.onclick = ()=> window.open(item.url, "_blank");
@@ -289,4 +289,5 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 </body>
 </html>
+
 

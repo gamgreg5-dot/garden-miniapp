@@ -90,9 +90,8 @@
 <body>
 <div class="container">
 
-<div class="card"> 
-    <img src="coleus.png" class="plant-image">
-
+    <div class="card"> 
+        <img id="plantImage" class="plant-image" src="">
         <h1 id="plantName">Ваш цветок</h1>
         <div class="description" id="plantDescription">
             Красивое и неприхотливое комнатное растение.
@@ -101,7 +100,6 @@
 
     <div class="card">
         <h1>Уход</h1>
-
         <div class="care-grid">
             <div class="care-item">
                 <span>💧</span>
@@ -132,17 +130,25 @@ document.addEventListener("DOMContentLoaded", function() {
     const tg = window.Telegram?.WebApp;
     if (tg) tg.expand();
 
+    // Список растений и их фото
+    const plants = {
+        "Колеус": "images/coleus.jpg",
+        "Монстера": "images/monstera.jpg",
+        "Пеперомия": "images/peperomia.jpg"
+        // добавляй новые растения по аналогии
+    };
+
+    // Получаем выбранное растение через Telegram start_param
     const plantFromStart = tg?.initDataUnsafe?.start_param || "Колеус";
 
+    // Подставляем название и картинку
     document.getElementById("plantName").innerText = plantFromStart;
+    document.getElementById("plantImage").src = plants[plantFromStart] || "images/default.jpg";
 
     const waterBtn = document.getElementById("waterBtn");
     const statusText = document.getElementById("statusText");
 
-    // Интервал полива в днях
-    const wateringInterval = 3;
-
-    // Получаем дату последнего полива из localStorage
+    const wateringInterval = 3; // дней
     let lastWatered = localStorage.getItem(`${plantFromStart}-lastWatered`);
 
     function updateButtonState() {
@@ -150,54 +156,4 @@ document.addEventListener("DOMContentLoaded", function() {
         if (lastWatered) {
             const last = new Date(lastWatered);
             const diffTime = today - last;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const daysLeft = wateringInterval - diffDays;
-
-            if (daysLeft <= 0) {
-                // Можно поливать
-                waterBtn.disabled = false;
-                waterBtn.style.background = "#2ecc71";
-                statusText.innerText = "";
-            } else {
-                // Блокируем кнопку до следующего полива
-                waterBtn.disabled = true;
-                waterBtn.style.background = "#ccc";
-                statusText.innerText = `Следующий полив через ${daysLeft} дн.`;
-            }
-        } else {
-            // Еще не поливали → кнопка активна, надпись пустая
-            waterBtn.disabled = false;
-            waterBtn.style.background = "#2ecc71";
-            statusText.innerText = "";
-        }
-    }
-
-    waterBtn.addEventListener("click", () => {
-        const today = new Date().toISOString().slice(0, 10);
-        localStorage.setItem(`${plantFromStart}-lastWatered`, today);
-        lastWatered = today;
-        waterBtn.disabled = true;
-        waterBtn.style.background = "#ccc";
-        statusText.innerText = `Следующий полив через ${wateringInterval} дн. 🌱`;
-    });
-
-    updateButtonState();
-});
-</script>
-
-
-
-
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
+            const diffDays = Math.floor(diffTime

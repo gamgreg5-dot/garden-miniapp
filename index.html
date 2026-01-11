@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Можно поливать
                 waterBtn.disabled = false;
                 waterBtn.style.background = "#2ecc71";
-                statusText.innerText = `Следующий полив через ${wateringInterval} дн.`;
+                statusText.innerText = "";
             } else {
                 // Блокируем кнопку до следующего полива
                 waterBtn.disabled = true;
@@ -165,10 +165,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 statusText.innerText = `Следующий полив через ${daysLeft} дн.`;
             }
         } else {
-            // Еще не поливали
+            // Еще не поливали → кнопка активна, надпись пустая
             waterBtn.disabled = false;
             waterBtn.style.background = "#2ecc71";
-            statusText.innerText = `Следующий полив через ${wateringInterval} дн.`;
+            statusText.innerText = "";
         }
     }
 
@@ -176,7 +176,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const today = new Date().toISOString().slice(0, 10);
         localStorage.setItem(`${plantFromStart}-lastWatered`, today);
         lastWatered = today;
-        updateButtonState();
+        waterBtn.disabled = true;
+        waterBtn.style.background = "#ccc";
         statusText.innerText = `Следующий полив через ${wateringInterval} дн. 🌱`;
     });
 
@@ -186,8 +187,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+
 </body>
 </html>
+
 
 
 

@@ -55,7 +55,7 @@ label { font-size:14px; margin-top:10px; display:block;}
 <div class="care-item" id="carePets"><span>🐾</span>Безопасно для животных</div>
 <div class="care-item" id="careTemp"><span>🌡️</span>Температура</div>
 </div>
-<button class="button" id="waterBtn">Я полил сегодня 💧</button>
+<button class="button" id="waterBtn">Я полил(а) цветочек💧</button>
 <div class="status" id="statusText"></div>
 
 <h1 style="margin-top:16px;">Купить</h1>
@@ -227,7 +227,7 @@ document.getElementById("runTestBtn").onclick = ()=>{
         document.getElementById("plantDescription").innerText = plant.desc;
 
         // Обновляем показатели ухода
-        careWater.innerText = `💧 Полив: ${plant.baseInterval} дн.`;
+        careWater.innerText = `💧 Полив: каждые ${plant.baseInterval} дн.`;
         careLight.innerText = `☀️ Свет: ${plant.prefersBright ? "яркий" : "средний"}`;
         carePets.innerText = `🐾 Безопасно для животных: ${plant.petsSafe ? "Да" : "Нет"}`;
         careTemp.innerText = `🌡️ Температура: ${plant.temp}`;
@@ -281,6 +281,7 @@ document.getElementById("runTestBtn").onclick = ()=>{
 </script>
 </body>
 </html>
+
 
 
 

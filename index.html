@@ -172,22 +172,46 @@ document.addEventListener("DOMContentLoaded", function(){
         plantCard.classList.remove("hidden");
     };
 
-    document.getElementById("runTestBtn").onclick = ()=>{
-        const loc=document.getElementById("locationSelect").value;
-        const temp=document.getElementById("tempSelect").value;
-        const exp=document.getElementById("expSelect").value;
-        const pets=document.getElementById("petsSelect").value;
-        let suggested=[];
-        if(loc==="south" && pets==="yes") suggested.push("Бегония","Альстромерия");
-        if(loc==="east" && temp==="normal") suggested.push("Гардения","Колеус");
-        if(loc==="north") suggested.push("Орхидея Фаленопсис");
-        if(exp==="pro" && loc==="west") suggested.push("Орхидея Каттлея");
-        if(suggested.length===0) suggested.push("Колеус");
-        testCard.classList.add("hidden");
-        choosePlantCard.classList.remove("hidden");
-        suggestedSelect.innerHTML="";
-        suggested.forEach(p=>{ let opt=document.createElement("option"); opt.value=p; opt.innerText=p; suggestedSelect.appendChild(opt); });
-    };
+document.getElementById("runTestBtn").onclick = ()=>{
+
+    const loc = document.getElementById("locationSelect").value;
+    const temp = document.getElementById("tempSelect").value;
+    const exp = document.getElementById("expSelect").value;
+    const pets = document.getElementById("petsSelect").value;
+
+    // Берём все растения
+    let suggested = Object.keys(plants);
+
+    // Фильтруем по свету
+    if(loc === "south") suggested = suggested.filter(p => plants[p].prefersBright);
+    if(loc === "north" || loc === "far") suggested = suggested.filter(p => !plants[p].prefersBright);
+
+    // Фильтруем по температуре
+    if(temp === "cold") suggested = suggested.filter(p => plants[p].temp.includes("18–25") || plants[p].temp.includes("до 18") );
+    if(temp === "hot") suggested = suggested.filter(p => plants[p].temp.includes("25") || plants[p].temp.includes("выше") );
+
+    // Фильтруем по питомцам
+    if(pets === "yes") suggested = suggested.filter(p => plants[p].petsSafe);
+
+    // Фильтруем по опыту пользователя (упрощаем: начинающие — простые растения)
+    if(exp === "kill") suggested = suggested.filter(p => plants[p].baseInterval <= 5);
+    if(exp === "medium") suggested = suggested.filter(p => plants[p].baseInterval <= 6);
+
+    // Если ничего не осталось, возвращаем запасное
+    if(suggested.length === 0) suggested.push("Колеус");
+
+    // Переходим к карточке выбора растения
+    testCard.classList.add("hidden");
+    choosePlantCard.classList.remove("hidden");
+    suggestedSelect.innerHTML = "";
+    suggested.forEach(p => {
+        let opt = document.createElement("option");
+        opt.value = p;
+        opt.innerText = p;
+        suggestedSelect.appendChild(opt);
+    });
+};
+
     document.getElementById("choosePlantBtn").onclick = ()=>{
         const selected = suggestedSelect.value;
         localStorage.setItem("currentPlant", selected);
@@ -257,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 </body>
 </html>
+
 
 
 

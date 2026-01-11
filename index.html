@@ -128,20 +128,27 @@
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+document.addEventListener("DOMContentLoaded", function() {
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
 
-    const plantFromStart = tg.initDataUnsafe?.start_param || "Колеус";
+    const plantFromStart = tg?.initDataUnsafe?.start_param || "Колеус";
 
     document.getElementById("plantName").innerText = plantFromStart;
 
-    document.getElementById("waterBtn").addEventListener("click", () => {
-        document.getElementById("statusText").innerText = "Отлично! Цветок доволен 🌱";
+    const waterBtn = document.getElementById("waterBtn");
+    const statusText = document.getElementById("statusText");
+
+    waterBtn.addEventListener("click", () => {
+        statusText.innerText = "Отлично! Цветок доволен 🌱";
     });
+});
 </script>
+
 
 </body>
 </html>
+
 
 
 

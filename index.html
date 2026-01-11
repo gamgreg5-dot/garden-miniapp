@@ -25,21 +25,21 @@ label { font-size:14px; margin-top:10px; display:block;}
 <body>
 <div class="container">
 
-<!-- 1. Выбор есть цветок -->
+<!-- 1. Есть цветок -->
 <div class="card" id="havePlantCard">
 <h1>У вас уже есть цветок?</h1>
 <button class="button" id="havePlantYes">Да 🌱</button>
 <button class="button" id="havePlantNo">Нет ❌</button>
 </div>
 
-<!-- 2. Если Да: выбор растения -->
+<!-- 2. Выбор растения, если есть -->
 <div class="card hidden" id="selectPlantCard">
 <h1>Выберите ваш цветок</h1>
 <select id="plantSelect"></select>
 <button class="button" id="selectPlantBtn">Выбрать</button>
 </div>
 
-<!-- 3. Карточка растения с поливом -->
+<!-- 3. Карточка растения -->
 <div class="card hidden" id="plantCard">
 <img id="plantImage" class="plant-image" src="">
 <h1 id="plantName"></h1>
@@ -60,31 +60,40 @@ label { font-size:14px; margin-top:10px; display:block;}
 <h1>Давайте подберем вам цветок</h1>
 <div class="description">Ответьте на вопросы:</div>
 
-<label>1. Освещение в комнате</label>
-<select id="lightSelect">
-<option value="bright">Яркое</option>
-<option value="medium">Среднее</option>
-<option value="low">Теневое</option>
+<label>1. Где будет стоять растение?</label>
+<select id="locationSelect">
+<option value="south">🌞 Южное окно</option>
+<option value="east">🌤 Восточное окно</option>
+<option value="west">🌥 Западное окно</option>
+<option value="north">🌑 Северное окно</option>
+<option value="far">🪴 Далеко от окна</option>
 </select>
 
-<label>2. Есть ли домашние питомцы?</label>
+<label>2. Какая у вас температура дома?</label>
+<select id="tempSelect">
+<option value="cold">❄️ Прохладно (до 18°C)</option>
+<option value="normal">🌡 Нормально (18–24°C)</option>
+<option value="hot">🔥 Жарко (25°C и выше)</option>
+</select>
+
+<label>3. Какой у вас опыт с растениями?</label>
+<select id="expSelect">
+<option value="kill">😅 Я обычно их убиваю</option>
+<option value="medium">🙂 Иногда получается</option>
+<option value="pro">😎 Я уверенный цветовод</option>
+</select>
+
+<label>4. Есть ли у вас домашние животные?</label>
 <select id="petsSelect">
-<option value="yes">Да</option>
-<option value="no">Нет</option>
+<option value="yes">🐾 Да</option>
+<option value="no">🚫 Нет</option>
 </select>
 
-<label>3. Ваш опыт ухода за растениями</label>
-<select id="experienceSelect">
-<option value="beginner">Начинающий</option>
-<option value="medium">Средний</option>
-<option value="pro">Опытный</option>
-</select>
-
-<label>4. Уровень влажности в помещении</label>
-<select id="humiditySelect">
-<option value="low">Низкая</option>
-<option value="medium">Средняя</option>
-<option value="high">Высокая</option>
+<label>5. Как часто вы хотите получать напоминания?</label>
+<select id="reminderSelect">
+<option value="min">🔔 Минимум</option>
+<option value="std">🔔🔔 Стандарт</option>
+<option value="max">🔔🔔🔔 Часто</option>
 </select>
 
 <button class="button" id="runTestBtn">Подобрать растение</button>
@@ -96,13 +105,14 @@ label { font-size:14px; margin-top:10px; display:block;}
 document.addEventListener("DOMContentLoaded", function(){
     const tg = window.Telegram?.WebApp; if(tg) tg.expand();
 
+    // Список растений на русском
     const plants = {
-        "Alctromeriya": {img:"images/alctromeriya.png", desc:"Яркий неприхотливый цветок."},
-        "Begoniya": {img:"images/begoniya.png", desc:"Подходит для ярких окон и безопасен для питомцев."},
-        "Koleus": {img:"images/coleus.png", desc:"Красивое и неприхотливое комнатное растение."},
-        "Gardeniya": {img:"images/gardeniya.png", desc:"Любит яркий свет и влажность."},
-        "Orfid Falenopsis": {img:"images/orfid_falenopsis.png", desc:"Красивый орхидей с минимальным уходом."},
-        "Orfid Kattleya": {img:"images/orfid_kattleya.png", desc:"Для опытных цветоводов, любит свет и тепло."}
+        "Альстромерия": {img:"images/alctromeriya.png", desc:"Яркий неприхотливый цветок."},
+        "Бегония": {img:"images/begoniya.png", desc:"Подходит для ярких окон и безопасен для питомцев."},
+        "Колеус": {img:"images/coleus.png", desc:"Красивое и неприхотливое комнатное растение."},
+        "Гардения": {img:"images/gardeniya.png", desc:"Любит яркий свет и влажность."},
+        "Орхидея Фаленопсис": {img:"images/orfid_falenopsis.png", desc:"Красивый орхидей с минимальным уходом."},
+        "Орхидея Каттлея": {img:"images/orfid_kattleya.png", desc:"Для опытных цветоводов, любит свет и тепло."}
     };
 
     const havePlantCard = document.getElementById("havePlantCard");
@@ -135,27 +145,28 @@ document.addEventListener("DOMContentLoaded", function(){
         plantCard.classList.remove("hidden");
     };
 
-    // 3. Тест для новых пользователей
+    // 3. Подбор растения через тест
     document.getElementById("runTestBtn").onclick = ()=>{
-        const light = document.getElementById("lightSelect").value;
+        const loc = document.getElementById("locationSelect").value;
+        const temp = document.getElementById("tempSelect").value;
+        const exp = document.getElementById("expSelect").value;
         const pets = document.getElementById("petsSelect").value;
-        const exp = document.getElementById("experienceSelect").value;
-        const hum = document.getElementById("humiditySelect").value;
+        const reminder = document.getElementById("reminderSelect").value;
 
-        // Простая логика подбора, можно расширить
-        let suggested = "Koleus"; 
-        if(light==="bright" && pets==="yes" && exp==="beginner") suggested="Begoniya";
-        else if(light==="medium" && pets==="no" && hum==="medium") suggested="Gardeniya";
-        else if(light==="low") suggested="Orfid Falenopsis";
-        else if(exp==="pro" && light==="bright") suggested="Orfid Kattleya";
-        else if(light==="bright" && exp==="medium") suggested="Alctromeriya";
+        // Простая логика подбора
+        let suggested = "Колеус";
+        if(loc==="south" && pets==="yes" && exp==="kill") suggested="Бегония";
+        else if(loc==="east" && temp==="normal") suggested="Гардения";
+        else if(loc==="north") suggested="Орхидея Фаленопсис";
+        else if(exp==="pro" && loc==="west") suggested="Орхидея Каттлея";
+        else if(loc==="south" && exp==="medium") suggested="Альстромерия";
 
         testCard.classList.add("hidden");
         showPlantCard(suggested);
         plantCard.classList.remove("hidden");
     };
 
-    // 4. Функция отображения карточки растения
+    // 4. Карточка растения с поливом
     function showPlantCard(plantName){
         document.getElementById("plantName").innerText = plantName;
         document.getElementById("plantImage").src = plants[plantName].img;

@@ -18,8 +18,6 @@ h1 { margin:0 0 8px; font-size:22px;}
 .button:active { transform:scale(0.98);}
 .status { margin-top:10px; font-size:14px; color:#2ecc71; text-align:center;}
 .hidden { display:none; }
-select,input[type="radio"] { width:100%; padding:10px; border-radius:10px; font-size:16px; margin-top:8px;}
-label { font-size:14px; margin-top:10px; display:block;}
 .purchase-option { display:flex; align-items:center; margin-top:10px; background:#f7f9f8; border-radius:12px; padding:10px; cursor:pointer;}
 .purchase-option img { width:40px; margin-right:12px; border-radius:8px;}
 .purchase-option span { font-size:16px; }
@@ -114,9 +112,9 @@ label { font-size:14px; margin-top:10px; display:block;}
 <script>
 // ===== ДАННЫЕ =====
 const plants = {
-    "Колеус": {img:"images/coleus.png", desc:"Красивое тропическое растение с яркими листьями.", baseInterval:3, prefersBright:true, petsSafe:true, temp:"18–25°C"},
-    "Бегония": {img:"images/begoniya.png", desc:"Пышные листья и красивые цветы.", baseInterval:4, prefersBright:false, petsSafe:true, temp:"18–25°C"},
-    "Альстромерия": {img:"images/alstro.png", desc:"Яркая, миниатюрная лилия.", baseInterval:5, prefersBright:true, petsSafe:true, temp:"18–25°C"}
+    "Колеус": {img:"images/coleus.png", baseInterval:{seed:3, sprout:2, young:3, adult:3}, prefersBright:true, petsSafe:true, temp:"18–25°C"},
+    "Бегония": {img:"images/begoniya.png", baseInterval:{seed:4, sprout:3, young:4, adult:4}, prefersBright:false, petsSafe:true, temp:"18–25°C"},
+    "Альстромерия": {img:"images/alstro.png", baseInterval:{seed:5, sprout:3, young:4, adult:5}, prefersBright:true, petsSafe:true, temp:"18–25°C"}
 };
 
 const purchaseLinks = {
@@ -125,16 +123,26 @@ const purchaseLinks = {
     "Альстромерия":[{name:"Набор: семена, горшок, земля", img:"images/ozon.png", url:"https://www.ozon.ru/"}]
 };
 
-// ===== ЭТАПЫ РАСТЕНИЯ =====
+// ===== ЭТАПЫ С ИНСТРУКЦИЯМИ =====
 const plantStages = {
   "Колеус":{
-    seed:{title:"Посадка семян 🌱", content:["Посадите семена в влажный грунт и накройте плёнкой."], img:"images/coleus_seed.png"},
-    sprout:{title:"Ростки 🌿", content:["Ростки появились! Свет яркий, полив умеренный."], img:"images/coleus_sprout.png"},
-    young:{title:"Подросшее растение 🌱‍🌱", content:["Растение подросло. Прищипка стимулирует боковые побеги."], img:"images/coleus_young.png"},
-    adult:{title:"Взрослый колеус 🌸", content:["Поздравляем! Взрослый колеус готов. Полив регулярно."], img:"images/coleus.png"}
+    seed:{title:"Посадка семян 🌱", content:["Посадите семена во влажный грунт","Накройте плёнкой","Поливайте 1 раз в 3 дня"], img:"images/coleus_seed.png"},
+    sprout:{title:"Ростки 🌿", content:["Снимите плёнку","Яркий рассеянный свет","Полив 1 раз в 2 дня"], img:"images/coleus_sprout.png"},
+    young:{title:"Подросшее растение 🌱‍🌱", content:["Подкармливайте удобрением раз в неделю","Прищипка боковых побегов","Полив 1 раз в 2-3 дня"], img:"images/coleus_young.png"},
+    adult:{title:"Взрослый колеус 🌸", content:["Регулярный полив 1 раз в 3 дня","Подкормка раз в 2 недели","Обрезайте увядшие листья"], img:"images/coleus.png"}
   },
-  "Бегония":{seed:{title:"Посадка семян 🌱", content:["Посадите семена."], img:"images/begonia_seed.png"}, sprout:{title:"Ростки 🌿", content:["Ростки появились."], img:"images/begonia_sprout.png"}, young:{title:"Подросшее растение 🌱‍🌱", content:["Подросшее растение."], img:"images/begonia_young.png"}, adult:{title:"Взрослая бегония 🌸", content:["Взрослая бегония готова."], img:"images/begonia.png"}},
-  "Альстромерия":{seed:{title:"Посадка семян 🌱", content:["Посадите семена."], img:"images/alstro_seed.png"}, sprout:{title:"Ростки 🌿", content:["Ростки появились."], img:"images/alstro_sprout.png"}, young:{title:"Подросшее растение 🌱‍🌱", content:["Подросшее растение."], img:"images/alstro_young.png"}, adult:{title:"Взрослая альстромерия 🌸", content:["Взрослая альстромерия готова."], img:"images/alstro.png"}}
+  "Бегония":{
+    seed:{title:"Посадка семян 🌱", content:["Посадите семена","Полив 1 раз в 4 дня"], img:"images/begonia_seed.png"},
+    sprout:{title:"Ростки 🌿", content:["Ростки появились","Полив 1 раз в 3 дня"], img:"images/begonia_sprout.png"},
+    young:{title:"Подросшее растение 🌱‍🌱", content:["Подросшее растение","Полив 1 раз в 4 дня"], img:"images/begonia_young.png"},
+    adult:{title:"Взрослая бегония 🌸", content:["Полив 1 раз в 4 дня","Подкормка раз в неделю"], img:"images/begonia.png"}
+  },
+  "Альстромерия":{
+    seed:{title:"Посадка семян 🌱", content:["Посадите семена","Полив 1 раз в 5 дней"], img:"images/alstro_seed.png"},
+    sprout:{title:"Ростки 🌿", content:["Ростки появились","Полив 1 раз в 3 дня"], img:"images/alstro_sprout.png"},
+    young:{title:"Подросшее растение 🌱‍🌱", content:["Подросшее растение","Полив 1 раз в 4 дня"], img:"images/alstro_young.png"},
+    adult:{title:"Взрослая альстромерия 🌸", content:["Полив 1 раз в 5 дней","Подкормка раз в неделю"], img:"images/alstro.png"}
+  }
 };
 
 // ===== ЭЛЕМЕНТЫ =====
@@ -160,24 +168,25 @@ const purchaseContainer=document.getElementById("purchaseContainer");
 // ===== ПЕРЕМЕННЫЕ =====
 let currentPlant="";
 let currentStage="seed";
-let lastWatered=null;
+let wateredCount=0;
 
 // ===== ФУНКЦИИ =====
 function updatePlantCard(){
-    const plant = plants[currentPlant];
     const stageData = plantStages[currentPlant][currentStage];
+    const plant = plants[currentPlant];
 
     plantName.innerText = stageData.title;
     plantDescription.innerHTML = stageData.content.join("<br>");
     plantImage.src = stageData.img;
 
-    careWater.innerText = `💧 Полив: ${plant.baseInterval} дн.`;
+    careWater.innerText = `💧 Полив: каждые ${plant.baseInterval[currentStage]} дн.`;
     careLight.innerText = `☀️ Свет: ${plant.prefersBright?"яркий":"средний"}`;
     carePets.innerText = `🐾 Безопасно для животных: ${plant.petsSafe?"Да":"Нет"}`;
     careTemp.innerText = `🌡️ Температура: ${plant.temp}`;
 
-    // Кнопка следующей стадии
-    nextStageBtn.classList.remove("hidden");
+    // Кнопка следующей стадии доступна только если полили нужное количество раз
+    const requiredWater = 1; // можно сделать разное для стадий
+    nextStageBtn.style.display = (wateredCount >= requiredWater) ? "block" : "none";
 
     // Покупка
     purchaseContainer.innerHTML="";
@@ -194,30 +203,14 @@ function updatePlantCard(){
 
 // ===== ПОЛИВ =====
 function updateWaterButton(){
-    const plant = plants[currentPlant];
-    const today=new Date();
-    if(lastWatered){
-        const last=new Date(lastWatered);
-        const diff=Math.floor((today-last)/(1000*60*60*24));
-        const daysLeft=plant.baseInterval-diff;
-        if(daysLeft>0){
-            waterBtn.disabled=true;
-            waterBtn.style.background="#ccc";
-            statusText.innerText=`Следующий полив через ${daysLeft} дн.`;
-        } else {
-            waterBtn.disabled=false;
-            waterBtn.style.background="#2ecc71";
-            statusText.innerText="";
-        }
-    } else {
-        waterBtn.disabled=false;
-        waterBtn.style.background="#2ecc71";
-        statusText.innerText="";
-    }
+    waterBtn.disabled = false;
+    waterBtn.style.background="#2ecc71";
+    statusText.innerText="";
 }
 waterBtn.onclick=()=>{
-    lastWatered=new Date().toISOString().slice(0,10);
-    updateWaterButton();
+    wateredCount++;
+    statusText.innerText=`Вы полили растение! (${wateredCount} раз) 🌱`;
+    updatePlantCard();
 };
 
 // ===== ПЕРЕКЛЮЧЕНИЕ СТАДИЙ =====
@@ -225,10 +218,8 @@ nextStageBtn.onclick=()=>{
     if(currentStage==="seed") currentStage="sprout";
     else if(currentStage==="sprout") currentStage="young";
     else if(currentStage==="young") currentStage="adult";
-    else currentStage="seed"; // можно начать новый цикл
-    lastWatered=null;
+    wateredCount=0;
     updatePlantCard();
-    updateWaterButton();
 };
 
 // ===== ВЫБОР ДА/НЕТ =====
@@ -249,11 +240,10 @@ document.getElementById("havePlantNo").onclick=()=>{
 document.getElementById("selectPlantBtn").onclick=()=>{
     currentPlant = plantSelect.value;
     currentStage="seed";
-    lastWatered=null;
+    wateredCount=0;
     selectPlantCard.classList.add("hidden");
     plantCard.classList.remove("hidden");
     updatePlantCard();
-    updateWaterButton();
 };
 
 // ===== ТЕСТ ДЛЯ НОВИЧКОВ =====
@@ -276,11 +266,10 @@ document.getElementById("runTestBtn").onclick=()=>{
 document.getElementById("choosePlantBtn").onclick=()=>{
     currentPlant = suggestedSelect.value;
     currentStage="seed";
-    lastWatered=null;
+    wateredCount=0;
     choosePlantCard.classList.add("hidden");
     plantCard.classList.remove("hidden");
     updatePlantCard();
-    updateWaterButton();
 };
 </script>
 </body>

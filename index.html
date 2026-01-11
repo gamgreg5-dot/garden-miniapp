@@ -50,10 +50,10 @@ label { font-size:14px; margin-top:10px; display:block;}
 <div class="description" id="plantDescription"></div>
 <h1>Уход</h1>
 <div class="care-grid">
-<div class="care-item"><span>💧</span>Полив: 1–2 раза в неделю</div>
-<div class="care-item"><span>☀️</span>Свет: яркий, без прямых лучей</div>
+<div class="care-item"><span>💧</span>Полив</div>
+<div class="care-item"><span>☀️</span>Свет</div>
 <div class="care-item"><span>🐾</span>Безопасно для животных</div>
-<div class="care-item"><span>🌡️</span>Температура: 18–25°C</div>
+<div class="care-item"><span>🌡️</span>Температура</div>
 </div>
 <button class="button" id="waterBtn">Я полил сегодня 💧</button>
 <div class="status" id="statusText"></div>
@@ -120,81 +120,44 @@ document.addEventListener("DOMContentLoaded", function(){
     const tg = window.Telegram?.WebApp; if(tg) tg.expand();
 
     const plants = {
-        "Альстромерия": {img:"images/alctromeriya.png", desc:"Яркий неприхотливый цветок."},
-        "Бегония": {img:"images/begoniya.png", desc:"Подходит для ярких окон и безопасен для питомцев."},
-        "Колеус": {img:"images/coleus.png", desc:"Красивое и неприхотливое комнатное растение."},
-        "Гардения": {img:"images/gardeniya.png", desc:"Любит яркий свет и влажность."},
-        "Орхидея Фаленопсис": {img:"images/orfid_falenopsis.png", desc:"Красивый орхидей с минимальным уходом."},
-        "Орхидея Каттлея": {img:"images/orfid_kattleya.png", desc:"Для опытных цветоводов, любит свет и тепло."}
+        "Альстромерия": {img:"images/alctromeriya.png", desc:"Яркий, изящный южноамериканский цветок, похожий на миниатюрную лилию или орхидею.", baseInterval:5, prefersBright:true},
+        "Бегония": {img:"images/begoniya.png", desc:"Подходит для ярких окон, удивительно разнообразное растение с эффектными асимметричными листьями и пышными цветами.", baseInterval:4, prefersBright:false},
+        "Колеус": {img:"images/coleus.png", desc:"Красивое, яркое тропические растение, прозванный «крапивкой» за зубчатые листья.", baseInterval:3, prefersBright:true},
+        "Гардения": {img:"images/gardeniya.png", desc:"Вечнозеленый тропический кустарник семейства Мареновых, знаменитый белоснежными или кремовыми цветками.", baseInterval:4, prefersBright:true},
+        "Орхидея Фаленопсис": {img:"images/orfid_falenopsis.png", desc:"Изысканная тропическая орхидея, названная «орхидеей-бабочкой» за свои элегантные, крупные цветы.", baseInterval:7, prefersBright:false},
+        "Орхидея Каттлея": {img:"images/orfid_kattleya.png", desc:"«Королева орхидей», поражающая огромными, яркими, часто ароматными цветками самых разных окрасов.", baseInterval:6, prefersBright:true}
     };
 
     const purchaseLinks = {
-        "Альстромерия": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/alstromeriya-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/alstromeriya-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/alstromeriya-soil/"}
-        ],
-        "Бегония": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/begoniya-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/begoniya-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/begoniya-soil/"}
-        ],
-        "Колеус": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/coleus-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/coleus-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/coleus-soil/"}
-        ],
-        "Гардения": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/gardeniya-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/gardeniya-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/gardeniya-soil/"}
-        ],
-        "Орхидея Фаленопсис": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/orfid-falenopsis-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/orfid-falenopsis-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/orfid-falenopsis-soil/"}
-        ],
-        "Орхидея Каттлея": [
-            {name:"Горшок", img:"images/pot.png", url:"https://www.ozon.ru/product/orfid-kattleya-pot/"},
-            {name:"Семена", img:"images/seeds.png", url:"https://www.ozon.ru/product/orfid-kattleya-seeds/"},
-            {name:"Грунт", img:"images/soil.png", url:"https://www.ozon.ru/product/orfid-kattleya-soil/"}
-        ]
+        "Альстромерия":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}],
+        "Бегония":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}],
+        "Колеус":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}],
+        "Гардения":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}],
+        "Орхидея Фаленопсис":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}],
+        "Орхидея Каттлея":[{name:"Набор: семена, горшок, земля", img:"images/pot.png", url:"#"}]
     };
 
-    const havePlantCard = document.getElementById("havePlantCard");
-    const selectPlantCard = document.getElementById("selectPlantCard");
-    const testCard = document.getElementById("testCard");
-    const plantCard = document.getElementById("plantCard");
-    const choosePlantCard = document.getElementById("choosePlantCard");
-    const plantSelect = document.getElementById("plantSelect");
-    const suggestedSelect = document.getElementById("suggestedSelect");
-    const purchaseContainer = document.getElementById("purchaseContainer");
-
-    // Сохранённый цветок
-    const savedPlant = localStorage.getItem("currentPlant");
-    if(savedPlant && plants[savedPlant]){
-        havePlantCard.classList.add("hidden");
-        showPlantCard(savedPlant);
-        plantCard.classList.remove("hidden");
-    }
+    const havePlantCard=document.getElementById("havePlantCard");
+    const selectPlantCard=document.getElementById("selectPlantCard");
+    const testCard=document.getElementById("testCard");
+    const plantCard=document.getElementById("plantCard");
+    const choosePlantCard=document.getElementById("choosePlantCard");
+    const plantSelect=document.getElementById("plantSelect");
+    const suggestedSelect=document.getElementById("suggestedSelect");
+    const purchaseContainer=document.getElementById("purchaseContainer");
 
     // Выбор Да/Нет
     document.getElementById("havePlantYes").onclick = ()=>{
         havePlantCard.classList.add("hidden");
         selectPlantCard.classList.remove("hidden");
         plantSelect.innerHTML="";
-        for(let p in plants){
-            let opt=document.createElement("option"); opt.value=p; opt.innerText=p;
-            plantSelect.appendChild(opt);
-        }
+        for(let p in plants){ let opt=document.createElement("option"); opt.value=p; opt.innerText=p; plantSelect.appendChild(opt);}
     };
-
     document.getElementById("havePlantNo").onclick = ()=>{
         havePlantCard.classList.add("hidden");
         testCard.classList.remove("hidden");
     };
 
-    // Выбор растения из списка
     document.getElementById("selectPlantBtn").onclick = ()=>{
         const selected = plantSelect.value;
         localStorage.setItem("currentPlant", selected);
@@ -203,32 +166,22 @@ document.addEventListener("DOMContentLoaded", function(){
         plantCard.classList.remove("hidden");
     };
 
-    // Подбор растения через тест
     document.getElementById("runTestBtn").onclick = ()=>{
-        const loc = document.getElementById("locationSelect").value;
-        const temp = document.getElementById("tempSelect").value;
-        const exp = document.getElementById("expSelect").value;
-        const pets = document.getElementById("petsSelect").value;
-
-        let suggested = [];
+        const loc=document.getElementById("locationSelect").value;
+        const temp=document.getElementById("tempSelect").value;
+        const exp=document.getElementById("expSelect").value;
+        const pets=document.getElementById("petsSelect").value;
+        let suggested=[];
         if(loc==="south" && pets==="yes") suggested.push("Бегония","Альстромерия");
         if(loc==="east" && temp==="normal") suggested.push("Гардения","Колеус");
         if(loc==="north") suggested.push("Орхидея Фаленопсис");
         if(exp==="pro" && loc==="west") suggested.push("Орхидея Каттлея");
         if(suggested.length===0) suggested.push("Колеус");
-
         testCard.classList.add("hidden");
         choosePlantCard.classList.remove("hidden");
-
         suggestedSelect.innerHTML="";
-        suggested.forEach(p=>{
-            let opt=document.createElement("option");
-            opt.value=p;
-            opt.innerText=p;
-            suggestedSelect.appendChild(opt);
-        });
+        suggested.forEach(p=>{ let opt=document.createElement("option"); opt.value=p; opt.innerText=p; suggestedSelect.appendChild(opt); });
     };
-
     document.getElementById("choosePlantBtn").onclick = ()=>{
         const selected = suggestedSelect.value;
         localStorage.setItem("currentPlant", selected);
@@ -237,24 +190,37 @@ document.addEventListener("DOMContentLoaded", function(){
         plantCard.classList.remove("hidden");
     };
 
-    // Функция показа карточки растения
     function showPlantCard(plantName){
         document.getElementById("plantName").innerText = plantName;
         document.getElementById("plantImage").src = plants[plantName].img;
         document.getElementById("plantDescription").innerText = plants[plantName].desc;
 
-        // Полив
-        const waterBtn = document.getElementById("waterBtn");
-        const statusText = document.getElementById("statusText");
-        const wateringInterval = 3;
-        let lastWatered = localStorage.getItem(`${plantName}-lastWatered`);
+        const waterBtn=document.getElementById("waterBtn");
+        const statusText=document.getElementById("statusText");
 
+        // Получаем настройки полива
+        const baseInterval = plants[plantName].baseInterval;
+        const prefersBright = plants[plantName].prefersBright;
+
+        const location=document.getElementById("locationSelect")?.value || "normal";
+        const temperature=document.getElementById("tempSelect")?.value || "normal";
+
+        function getInterval(){
+            let interval=baseInterval;
+            if(location==="south" && prefersBright) interval-=1;
+            if(temperature==="hot") interval-=1;
+            if(interval<1) interval=1;
+            return interval;
+        }
+
+        let lastWatered = localStorage.getItem(`${plantName}-lastWatered`);
         function updateButtonState(){
+            const interval=getInterval();
             const today=new Date();
             if(lastWatered){
                 const last=new Date(lastWatered);
                 const diffDays=Math.floor((today-last)/(1000*60*60*24));
-                const daysLeft=wateringInterval-diffDays;
+                const daysLeft=interval-diffDays;
                 if(daysLeft<=0){ waterBtn.disabled=false; waterBtn.style.background="#2ecc71"; statusText.innerText=""; }
                 else{ waterBtn.disabled=true; waterBtn.style.background="#ccc"; statusText.innerText=`Следующий полив через ${daysLeft} дн.`; }
             }else{ waterBtn.disabled=false; waterBtn.style.background="#2ecc71"; statusText.innerText=""; }
@@ -266,23 +232,23 @@ document.addEventListener("DOMContentLoaded", function(){
             lastWatered=today;
             waterBtn.disabled=true;
             waterBtn.style.background="#ccc";
-            statusText.innerText=`Следующий полив через ${wateringInterval} дн. 🌱`;
+            statusText.innerText=`Следующий полив через ${getInterval()} дн. 🌱`;
         };
-
         updateButtonState();
 
         // Покупка
         purchaseContainer.innerHTML="";
         if(purchaseLinks[plantName]){
             purchaseLinks[plantName].forEach(item=>{
-                const div = document.createElement("div");
+                const div=document.createElement("div");
                 div.className="purchase-option";
-                div.onclick = ()=> window.open(item.url, "_blank");
-                div.innerHTML = `<img src="${item.img}" alt="${item.name}"><span>${item.name}</span>`;
+                div.onclick=()=>window.open(item.url,"_blank");
+                div.innerHTML=`<img src="${item.img}" alt="${item.name}"><span>${item.name}</span>`;
                 purchaseContainer.appendChild(div);
             });
         }
     }
+
 });
 </script>
 </body>

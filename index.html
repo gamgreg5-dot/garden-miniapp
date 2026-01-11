@@ -146,25 +146,30 @@ document.addEventListener("DOMContentLoaded", function() {
     let lastWatered = localStorage.getItem(`${plantFromStart}-lastWatered`);
 
     function updateButtonState() {
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-        if (lastWatered === today) {
-            waterBtn.disabled = true;
-            waterBtn.style.background = "#ccc";
-            statusText.innerText = "Полив сегодня уже выполнен 🌱";
+        const today = new Date();
+        if (lastWatered) {
+            const last = new Date(lastWatered);
+            const diffTime = today - last;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const daysLeft = wateringInterval - diffDays;
+
+            if (daysLeft <= 0) {
+                // Можно поливать
+                waterBtn.disabled = false;
+                waterBtn.style.background = "#2ecc71";
+                statusText.innerText = `Следующий полив через ${wateringInterval} дн.`;
+            } else {
+                // Блокируем кнопку до следующего полива
+                waterBtn.disabled = true;
+                waterBtn.style.background = "#ccc";
+                statusText.innerText = `Следующий полив через ${daysLeft} дн.`;
+            }
         } else {
+            // Еще не поливали
             waterBtn.disabled = false;
             waterBtn.style.background = "#2ecc71";
-            statusText.innerText = `Следующий полив через ${nextWateringDays()} дн.`;
+            statusText.innerText = `Следующий полив через ${wateringInterval} дн.`;
         }
-    }
-
-    function nextWateringDays() {
-        if (!lastWatered) return wateringInterval;
-        const last = new Date(lastWatered);
-        const today = new Date();
-        const diffTime = today - last;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        return Math.max(wateringInterval - diffDays, 0);
     }
 
     waterBtn.addEventListener("click", () => {
@@ -172,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem(`${plantFromStart}-lastWatered`, today);
         lastWatered = today;
         updateButtonState();
-        statusText.innerText = "Отлично! Цветок доволен 🌱";
+        statusText.innerText = `Следующий полив через ${wateringInterval} дн. 🌱`;
     });
 
     updateButtonState();
@@ -183,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </body>
 </html>
+
 
 
 
